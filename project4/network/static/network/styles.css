@@ -1,0 +1,23 @@
+.post_index{
+    position: relative;
+    margin: 0;
+    margin-top: -1px;
+    padding: 20px;
+    border: 1px solid lightblue;
+    background-color: beige;
+    box-sizing: border-box;
+}
+
+.date{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+}
+
+.mg{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 10px;
+}
