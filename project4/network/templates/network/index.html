@@ -3,7 +3,7 @@
 {% block body %}
     {% for post in posts%}
     <div class="post_index">
-        <h4>{{post.username}} </h4>
+        <h4><a href="/{{post.id_user.id}}">{{post.id_user.username}}</a></h4>
         <p>{{post.content}} </p>
         <p class="date">{{post.date}} </p>
         <p class="mg">mg:<b>{{post.mg}}</b>  </p>

@@ -3,10 +3,11 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    followers = models.ManyToManyField('self', related_name='following', blank=True)
+    following = models.ManyToManyField('self', related_name='followers', blank=True)
 
 class Post(models.Model):
-    username = models.CharField(max_length=64)
+    id_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=None)
     content = models.CharField(max_length=10000)
     date = models.DateTimeField(auto_now_add=True)
     mg = models.IntegerField(default=0)

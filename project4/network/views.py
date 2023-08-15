@@ -77,3 +77,12 @@ def newpost(request):
 
     else:
         return render(request, 'network/newpost.html')
+
+def individualprofile(request, id_user):
+    user = User.objects.get(pk= id_user)
+    posts_user = Post.objects.filter(id_user=user.id)
+    posts_order = sorted(posts_user, key=lambda x: x.date, reverse=True)
+    return render(request, 'network/individualprofile.html', {
+        "user": user,
+        "posts" : posts_order
+    })
