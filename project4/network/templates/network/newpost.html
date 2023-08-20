@@ -1,11 +1,11 @@
 {% extends "network/layout.html" %}
-
+{% load static %}
 {% block body %}
 
     <h3> New Post </h3>
     <form method="post">
         {% csrf_token %}
-        <input type="text" name="id_user" value="{{ user.id }}" readonly >
+        <input type="text" name="id_user" value="{{ user.id }}" readonly hidden >
         <input type="number" name="mg" value="0" readonly hidden>
         <div>
             <textarea name="content" rows="10" cols="100" placeholder="Write here"></textarea>

@@ -1,16 +1,21 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
     <div class="perfil">
         <div class="nameperfil">
-            <h2>{{user.username}}</h2>
-            <button id="follow">Follow</button>
+            <h2>{{userindividual.username}}</h2>
+            {% if user.is_authenticated %}
+            {% if user.id != userindividual.id  %}
+            <button class="follow" id="follow" data-idfollowing="{{userindividual.id}}">Follow</button>
+            {% endif %}
+            {% endif %}
         </div>
         <div class="mg">
-            <p>Followers : <b>{{user.followers}}</b></p>
+            <p>Followers : <b>{{userindividual.followers}}</b></p>
         </div>
         <div class="date">
-            <p>Following : <b>{{user.following}}</b></p>
+            <p>Following : <b>{{userindividual.following}}</b></p>
         </div>
     </div>
     
