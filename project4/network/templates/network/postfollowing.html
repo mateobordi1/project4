@@ -1,0 +1,21 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+    {% for user in users%}
+        <div>
+            {{user}}
+        </div>
+        
+    {% endfor %}
+
+    {% for post in posts %}
+    <div class="post_index">
+        <h4> <a href="user/{{post.id_user.id}}"> {{post.id_user.username}}</a></h4>
+        <p>{{post.content}} </p>
+        <p class="date">{{post.date}} </p>
+        <p class="mg">mg:<b>{{post.mg}}</b>  </p>
+    </div>
+    {% endfor %}
+
+    
+{% endblock %}

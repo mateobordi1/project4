@@ -1,5 +1,5 @@
 from django import forms
-from .models import User , Post
+from .models import User , Post, Follow
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -9,4 +9,9 @@ class UserForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
+        fields = '__all__'
+
+class FollowForm(forms.ModelForm):
+    class Meta:
+        model = Follow
         fields = '__all__'

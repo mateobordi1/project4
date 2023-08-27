@@ -6,8 +6,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User , Post
-from .forms import UserForm , PostForm
+from .models import User , Post, Follow
+from .forms import UserForm , PostForm, FollowForm
 
 def index(request):
     posts = Post.objects.all()
@@ -84,41 +84,65 @@ def individualprofile(request, id_user):
 
     if request.method == "GET":
 
-        user = User.objects.get(pk= id_user)
-        posts_user = Post.objects.filter(id_user=user.id)
+        user_profile = User.objects.get(pk= id_user)
+        user_logued = User.objects.get(pk=request.user.id)
+
+        posts_user = Post.objects.filter(id_user=user_profile.id)
         posts_order = sorted(posts_user, key=lambda x: x.date, reverse=True)
+        
+    
+        follower = Follow.objects.filter(follower=user_logued , following= user_profile)
+        if len(follower) != 0 :
+            state_follow = True
+        else: 
+            state_follow= False
+
+
+        followers = user_profile.followers.count()
+        following = user_profile.following.count()
         return render(request, 'network/individualprofile.html', {
-            "userindividual": user,
-            "posts" : posts_order
+            "userindividual": user_profile,
+            "posts" : posts_order,
+            "followers" : followers,
+            "following" : following,
+            "state" : state_follow
         })
 
-    elif request.method == "PUT":
-        data = json.loads(request.body)
-        print(data["state"] )
-        print(" LLEGAMOS DENTRO DE LA VISTAAAAAAAAAA ")
-        print(id_user)
-        print(request.user.id)       
-        # obtenemos el usuario que a sido seguido
-        usuario_seguido = User.objects.get(pk=id_user)
-        # y el que siguio
-        usuario_seguidor = User.objects.get(pk=request.user.id)
-
-        #nos fijamos si el usuario ya lo sigue o no
-        if data["state"] == "Follow":
-            response_data = {"content": "Following"}
-            return JsonResponse(response_data)
-        else:
-            response_data = {"content": "Follow"}
-            return JsonResponse(response_data)
-           
-
-
+def follow(request):
+    if request.method == "POST":
+        form = FollowForm(request.POST)
+        if form.is_valid():
+            form.save()
+            follower_id = form.cleaned_data['follower']
+            return HttpResponseRedirect(reverse('individualprofile', args=[follower_id.id]))
     else:
-        # Si se realiza una solicitud que no sea GET ni PUT, devuelve un error
-        return JsonResponse({"error": "GET or PUT request required."}, status=400)
+        return HttpResponse("Se requiere el metodo post")
 
+def unfollow(request):
+    if request.method == "POST":
+        form = FollowForm(request.POST)
+        if form.is_valid():
+            follower_id = form.cleaned_data['follower']
+            following_id = form.cleaned_data['following']
+            follow_to_delete = Follow.objects.filter(follower=follower_id , following=following_id)
+            follow_to_delete.delete()
+            return HttpResponseRedirect(reverse('individualprofile', args=[follower_id.id]))
+    else:
+        return HttpResponse("Se requiere el metodo post")
 
+def post_following(request):
+    if request.method == "GET":
+        user_logued = User.objects.get(pk=request.user.id)
+        users_following = Follow.objects.filter(follower=user_logued)
 
+        user_ids_following = [user_following.following.id for user_following in users_following]
+        
+        posts = Post.objects.filter(id_user__in=user_ids_following)
+        posts_order = sorted(posts, key=lambda x: x.date, reverse=True)
+        return render(request , 'network/postfollowing.html', {
+            "users": users_following , 
+            "posts": posts_order
+        })
     
 
 

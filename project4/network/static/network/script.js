@@ -7,40 +7,27 @@ document.addEventListener('DOMContentLoaded', function(){
     followButtons.forEach(button => {
 
         button.addEventListener('click', function(){
-            var csrftoken = getCookie("csrftoken");
-            const id_user = this.getAttribute("data-idfollowing");
-            var follow_following = document.querySelector('#follow').innerHTML;
+
+            var follow_following = this.getAttribute("data-state");
             console.log(id_user);
 
             fetch(`/user/${id_user}`,{
-                method : "PUT",
+                method : "POST",
                 headers: {
-                    "X-CSRFToken": csrftoken 
-                },
+                    'Content-Type': 'application/json',
+                  },
                 body: JSON.stringify({
                     state : follow_following
                 })
             })
             .then(response => response.json())
             .then(data => {
-                document.querySelector('#follow').innerHTML = data['content'];
+                this.innerHTML = data['content'];
                 console.log(data['content'] );
+                window.location.reload();
+                
 });
         });
     })
 
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            var cookies = document.cookie.split(";");
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 })

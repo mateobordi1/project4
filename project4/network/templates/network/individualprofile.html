@@ -6,16 +6,30 @@
         <div class="nameperfil">
             <h2>{{userindividual.username}}</h2>
             {% if user.is_authenticated %}
-            {% if user.id != userindividual.id  %}
-            <button class="follow" id="follow" data-idfollowing="{{userindividual.id}}">Follow</button>
-            {% endif %}
+                {% if user.id != userindividual.id  %}
+                    {% if state == 0 %}
+                        <form  action="{% url 'follow' %}" method="post" >
+                            {% csrf_token %}
+                            <input type="number" name="follower" value="{{user.id}}" readonly hidden> 
+                            <input type="number" name="following" value="{{userindividual.id}}" readonly hidden> 
+                            <button type="submit" class="follow" id="stateButton" >Follow</button>
+                        </form>
+                    {% else %}
+                        <form  action="{% url 'unfollow' %}" method="post" >
+                            {% csrf_token %}
+                            <input type="number" name="follower" value="{{user.id}}" readonly hidden> 
+                            <input type="number" name="following" value="{{userindividual.id}}" readonly hidden> 
+                            <button type="submit" class="follow" id="stateButton"  >Unfollow</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
             {% endif %}
         </div>
         <div class="mg">
-            <p>Followers : <b>{{userindividual.followers}}</b></p>
+            <p>Followers : <b>{{followers}}</b></p>
         </div>
         <div class="date">
-            <p>Following : <b>{{userindividual.following}}</b></p>
+            <p>Following : <b>{{following}}</b></p>
         </div>
     </div>
     

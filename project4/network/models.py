@@ -3,8 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    followers = models.ManyToManyField('self', related_name='following', blank=True)
-    following = models.ManyToManyField('self', related_name='followers', blank=True)
+    pass
 
 class Post(models.Model):
     id_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=None)
@@ -14,3 +13,10 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.username} : {self.content}"
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+
+    def __str__(self):
+        return f'{self.follower} follows {self.following}'
